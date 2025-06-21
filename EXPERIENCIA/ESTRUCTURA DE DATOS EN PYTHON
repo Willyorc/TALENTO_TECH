@@ -1,0 +1,27 @@
+import pandas as pd
+
+lista_auto = ["motor", "puertas", "baul", "farolas", "direcionales", "limpiabrisas", "llantas", "asientos", "radio", "timon" ]
+print(lista_auto)
+print()
+tupla_marca_autos = ("bmw", "mazda", "honda", "chevrolet", "toyota", "renault", "kia", "audi", "alfa romeo", "ferrari" )
+print(tupla_marca_autos)
+print()
+c_motor_auto = {"cigueñal", "arranque", "pistones", "bujias", "radiador", "culata", "arbol de levas", "valvulas", "biela", "bloque" }
+print(c_motor_auto)
+print()
+d_auto = {"motor":"vida del auto",
+          "puertas":"para ingresar los usuarios",
+          "baul":"guardar y llevar elementos o equipaje",
+          "farolas":"dan luz al conductor en la noche",
+          "direcionales":"se usan antes de cruzar en algun sentido el auto",
+          "limpiabrisas":"se utilizan cuando llueve",
+          "llantas":"aros de caucho que giran y hace el desplazamiento del auto",
+          "asientos":"se usan para sentarse el conductor y sus acompañamtes",
+          "radio":"Aparato para escuchar musica",
+          "timon":"Tambien llamado volante usado para direccionar el auto"}
+print(d_auto)
+
+df = pd.DataFrame(d_auto.items(), columns=["Caracteristica", "Descripcion"])
+print()
+print(df)
+df
