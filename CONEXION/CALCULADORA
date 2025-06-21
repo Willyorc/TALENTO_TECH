@@ -1,0 +1,24 @@
+print("**CALCULADORA WILLIAM CALDERON**")
+num1=int(input("Digita un numero1: "))
+num2=int(input("Digita un numero2: "))
+print("1: Sumar")
+resultado = num1 + num2
+print("El resultado es ",resultado)
+
+print("2: Restar")
+num1=int(input("Digita un numero1: "))
+num2=int(input("Digita un numero2: "))
+resultado = num1 - num2
+print("El resultado es ",resultado)
+
+print("3: Multiplicar")
+num1=int(input("Digita un numero1: "))
+num2=int(input("Digita un numero2: "))
+resultado = num1 * num2
+print("El resultado es ",resultado)
+
+print("4: Dividir")
+num1=int(input("Digita un numero1: "))
+num2=int(input("Digita un numero2: "))
+resultado = num1 / num2
+print("El resultado es ",resultado)
