@@ -1,1 +1,455 @@
+PROYECTO: Predecir el consumo de combustible de un vehiculo.
+
+OBJETIVO: Mediante una base de datos descargada en el siguiente link https://www.kaggle.com/datasets/molacmusic/vehiculos-dataset se busca predecir el consumo de combustible de un vehiculo tomando en cuenta las caractiristica de un conjunto de vehiculos.
+
+El primer paso es cargar los datos en un pandas DataFrame para comenzar el análisis.
+
+
+[1]
+1 s
+# Importar librerias
+
+import numpy as np
+import pandas as pd
+import seaborn as sns; sns.set()
+import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+[2]
+0 s
+df = pd.read_csv("/content/Vehiculos.csv")
+display(df.head())
+display(df.info())
+
+Los datos no se cargaron correctamente, ya que están en una sola columna. El separador parece ser un punto y coma en lugar de una coma. Necesito recargar los datos especificando el separador correcto.
+
+
+[3]
+0 s
+df = pd.read_csv("/content/Vehiculos.csv", sep=';')
+display(df.head())
+display(df.info())
+
+Preparar los datos
+
+Seleccionar las variables independientes y dependientes para el modelo de regresión y dividir los datos en conjuntos de entrenamiento y de prueba.
+
+Seleccionar las columnas relevantes, gestionar los valores faltantes, reestructurar la variable independiente y dividir los datos en conjuntos de entrenamiento y de prueba según las instrucciones.
+
+
+[6]
+0 s
+from sklearn.model_selection import train_test_split
+
+# Seleccione las variables independientes y dependientes
+X = df['Caballos']
+y = df['Consumo']
+
+# Combine X e y en un DataFrame temporal para eliminar fácilmente filas con NaN
+temp_df = pd.DataFrame({'Caballos': X, 'Consumo': y}).dropna()
+
+# Separar X e y nuevamente después de eliminar los NaN
+X_cleaned = temp_df['Caballos']
+y_cleaned = temp_df['Consumo']
+
+# Reformular la variable independiente
+X_reshaped = X_cleaned.values.reshape(-1, 1)
+
+# Dividir los datos en conjuntos de entrenamiento y prueba
+X_train, X_test, y_train, y_test = train_test_split(X_reshaped, y_cleaned, test_size=0.2, random_state=42)
+
+print("Shape of X_train:", X_train.shape)
+print("Shape of X_test:", X_test.shape)
+print("Shape of y_train:", y_train.shape)
+print("Shape of y_test:", y_test.shape)
+Shape of X_train: (123, 1)
+Shape of X_test: (31, 1)
+Shape of y_train: (123,)
+Shape of y_test: (31,)
+Entrenar el modelo
+
+Entrenar un modelo de regresión lineal simple con los datos de entrenamiento.
+
+Entrenar un modelo de regresión lineal simple con los datos de entrenamiento.
+
+
+[7]
+0 s
+from sklearn.linear_model import LinearRegression
+
+# Instanciar un objeto LinearRegression
+model = LinearRegression()
+
+# Ajuste el modelo de regresión lineal a los datos de entrenamiento
+model.fit(X_train, y_train)
+
+print("Model training complete.")
+Model training complete.
+Evaluar el modelo
+
+Evaluar el rendimiento del modelo con los datos de prueba y visualizar los resultados.
+
+Evaluar el rendimiento del modelo con los datos de prueba y visualizar los resultados calculando el MSE y el R², haciendo predicciones y trazando los datos de prueba y la línea de regresión.
+
+
+[8]
+0 s
+from sklearn.metrics import mean_squared_error, r2_score
+import matplotlib.pyplot as plt
+
+# Hacer predicciones sobre los datos de prueba
+y_pred = model.predict(X_test)
+
+# Calcular MSE y R2
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+# Imprimir las métricas
+print(f"Mean Squared Error (MSE): {mse:.2f}")
+print(f"R-squared (R2): {r2:.2f}")
+
+# Crear un diagrama de dispersión de los datos de prueba
+plt.figure(figsize=(10, 6))
+plt.scatter(X_test, y_test, color='blue', label='Actual Test Data')
+
+# Traza la línea de regresión
+plt.plot(X_test, y_pred, color='red', linewidth=2, label='Regression Line')
+
+
+# Agregar etiquetas y título
+plt.xlabel("Horsepower")
+plt.ylabel("Fuel Consumption")
+plt.title("Linear Regression: Horsepower vs. Fuel Consumption (Test Data)")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+Conclusion:
+
+Resultados clave del análisis de datos El intento inicial de cargar los datos falló debido al uso de un separador incorrecto (coma en lugar de punto y coma). Tras corregir el separador a punto y coma, los datos se cargaron correctamente con 154 filas y 10 columnas. El análisis se centró en la relación entre «Caballos» (caballos de fuerza) como variable independiente y «Consumo» (consumo de combustible) como variable dependiente. Se eliminaron las filas con valores faltantes en «Caballos» o «Consumo», lo que resultó en 154 puntos de datos válidos utilizados para el entrenamiento y las pruebas. Los datos se dividieron en conjuntos de entrenamiento (80 % o 123 filas) y de prueba (20 % o 31 filas). Se entrenó un modelo de regresión lineal simple con los datos de entrenamiento.
+
+El rendimiento del modelo con los datos de prueba mostró un error cuadrático medio (EMM) de 12,09. El valor de R² (R²) del modelo en los datos de prueba fue de 0,25, lo que indica que aproximadamente el 25 % de la varianza en «Consumo» puede explicarse por «Caballos». Perspectivas o próximos pasos
+
+El bajo valor de R² sugiere que «Caballos» por sí solo no es un predictor sólido de «Consumo». Considere la posibilidad de incorporar otras características relevantes (p. ej., peso del vehículo, cilindrada, año de fabricación) en un modelo de regresión lineal múltiple para mejorar la predicción del consumo de combustible.
+
+REGRESION LINEAL MULTIPLE
+
+Cargue DE los datos en un DataFrame de pandas, utilizando ';' como separador, y muestre el encabezado y la información para verificar.
+
+
+[14]
+0 s
+df = pd.read_csv("/content/Vehiculos.csv", sep=';')
+display(df.head())
+display(df.info())
+
+Preparar los datos
+
+Seleccionar las variables independientes y dependientes para el modelo de regresión lineal múltiple y dividir los datos en conjuntos de entrenamiento y de prueba.
+
+Seleccionar las columnas relevantes para la regresión lineal múltiple, gestionar los valores faltantes y dividir los datos en conjuntos de entrenamiento y de prueba según las instrucciones.
+
+
+[19]
+0 s
+from sklearn.model_selection import train_test_split
+
+# Define la variable dependiente
+y = df['Consumo']
+
+# Define las variables independientes
+X = df[['Caballos', 'Peso neto', 'Tamaño del motor']]
+
+# Convert columns with comma decimals to numeric
+for col in ['Peso neto', 'Tamaño del motor']:
+    X[col] = X[col].astype(str).str.replace(',', '.', regex=False)
+    X[col] = pd.to_numeric(X[col], errors='coerce')
+
+# Combine X e y en un DataFrame temporal para eliminar fácilmente filas con NaN
+temp_df = pd.concat([X, y], axis=1).dropna()
+
+# Separar X e y nuevamente después de eliminar los NaN
+X_cleaned = temp_df[['Caballos', 'Peso neto', 'Tamaño del motor']]
+y_cleaned = temp_df['Consumo']
+
+# Dividir los datos en conjuntos de entrenamiento y prueba
+X_train, X_test, y_train, y_test = train_test_split(X_cleaned, y_cleaned, test_size=0.2, random_state=42)
+
+print("Shape of X_train:", X_train.shape)
+print("Shape of X_test:", X_test.shape)
+print("Shape of y_train:", y_train.shape)
+print("Shape of y_test:", y_test.shape)
+Shape of X_train: (122, 3)
+Shape of X_test: (31, 3)
+Shape of y_train: (122,)
+Shape of y_test: (31,)
+/tmp/ipython-input-19-697156843.py:11: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X[col] = X[col].astype(str).str.replace(',', '.', regex=False)
+/tmp/ipython-input-19-697156843.py:12: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X[col] = pd.to_numeric(X[col], errors='coerce')
+/tmp/ipython-input-19-697156843.py:11: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X[col] = X[col].astype(str).str.replace(',', '.', regex=False)
+/tmp/ipython-input-19-697156843.py:12: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  X[col] = pd.to_numeric(X[col], errors='coerce')
+Entrenar el modelo
+
+Entrenar un modelo de regresión lineal múltiple con los datos de entrenamiento.
+
+Entrenar un modelo de regresión lineal múltiple con los datos de entrenamiento.
+
+
+[20]
+0 s
+from sklearn.linear_model import LinearRegression
+
+# Instanciar un objeto LinearRegression
+model = LinearRegression()
+
+# Ajuste el modelo de regresión lineal a los datos de entrenamiento
+model.fit(X_train, y_train)
+
+print("Model training complete.")
+Model training complete.
+Evaluar el modelo
+
+Evaluar el rendimiento del modelo con los datos de prueba y visualizar los resultados.
+
+Evaluar el rendimiento del modelo con los datos de prueba y visualizar los resultados calculando el MSE y el R², haciendo predicciones y trazando los datos de prueba y la línea de regresión. Dado que se trata de una regresión lineal múltiple, graficaré una de las variables independientes frente a la variable dependiente y las predicciones.
+
+
+[21]
+0 s
+from sklearn.metrics import mean_squared_error, r2_score
+import matplotlib.pyplot as plt
+
+# Hacer predicciones sobre los datos de prueba
+y_pred = model.predict(X_test)
+
+# Calcular MSE y R2
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+# Imprimir las métricas
+print(f"Mean Squared Error (MSE): {mse:.2f}")
+print(f"R-squared (R2): {r2:.2f}")
+
+# Cree un diagrama de dispersión de los datos de prueba para una variable independiente (por ejemplo, 'Caballos')
+plt.figure(figsize=(10, 6))
+plt.scatter(X_test['Caballos'], y_test, color='blue', label='Actual Test Data')
+
+# Grafique los valores predichos contra la misma variable independiente
+plt.scatter(X_test['Caballos'], y_pred, color='red', label='Predicted Test Data')
+
+
+# Agregar etiquetas y título
+plt.xlabel("Horsepower")
+plt.ylabel("Fuel Consumption")
+plt.title("Multiple Linear Regression: Horsepower vs. Fuel Consumption (Test Data)")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+Conclucion
+
+Resultados clave del análisis de datos El error cuadrático medio (EMM) del modelo en los datos de prueba es de 5,44.
+
+El R² (R²) del modelo en los datos de prueba es de 0,64, lo que indica que aproximadamente el 64 % de la varianza en el consumo de combustible se puede explicar por las variables independientes (potencia, peso neto y cilindrada). Perspectivas o próximos pasos
+
+Si bien el modelo muestra un R² razonable, un análisis más profundo podría incluir la exploración de la ingeniería de características o la inclusión de variables relevantes adicionales para mejorar el rendimiento del modelo y reducir el ECM.
+
+REALIZACION DEL ANALISIS POR MEDIO DE ANALISIS DE DATOS EXPLORATORIO "EDA"
+
+Task
+Perform a comprehensive EDA on the dataset located at "/content/Vehiculos.csv".
+
+Data loading and initial inspection
+Subtask:
+Load the dataset and display the first few rows and information to understand the basic structure and data types.
+
+Reasoning: Load the dataset into a pandas DataFrame and display the head and info to understand its structure and data types.
+
+
+[22]
+0 s
+df = pd.read_csv("/content/Vehiculos.csv", sep=';')
+display(df.head())
+display(df.info())
+
+Descriptive statistics
+Subtask:
+Calculate descriptive statistics for numerical columns to understand the central tendency, dispersion, and shape of the data.
+
+Reasoning: Select numerical columns and calculate descriptive statistics.
+
+
+[23]
+0 s
+numerical_cols = df.select_dtypes(include=np.number)
+display(numerical_cols.describe())
+
+Handle missing values
+Subtask:
+Identify and visualize missing values, and decide on a strategy to handle them (e.g., imputation, dropping rows/columns).
+
+Reasoning: I need to identify and visualize missing values to decide on a handling strategy. Calculating the number of missing values and visualizing them with a heatmap are the first steps to achieve this.
+
+
+[24]
+0 s
+# Calculate the number of missing values for each column
+missing_values = df.isnull().sum()
+
+# Print the number of missing values
+print("Number of missing values per column:")
+display(missing_values)
+
+# Visualize missing values using a heatmap
+plt.figure(figsize=(12, 6))
+sns.heatmap(df.isnull(), cbar=False, cmap='viridis')
+plt.title('Heatmap of Missing Values')
+plt.xlabel('Columns')
+plt.ylabel('Rows')
+plt.show()
+
+Visualize data distributions
+Subtask:
+Plot histograms or box plots for numerical features to visualize their distributions and identify outliers.
+
+Reasoning: Iterate through numerical columns and create histograms and box plots to visualize distributions and identify outliers.
+
+
+[25]
+1 s
+# Select numerical columns
+numerical_cols = df.select_dtypes(include=np.number)
+
+# Iterate through numerical columns and create plots
+for col in numerical_cols.columns:
+    # Create histogram
+    plt.figure(figsize=(10, 6))
+    sns.histplot(data=df, x=col, kde=True)
+    plt.title(f'Distribution of {col}')
+    plt.xlabel(col)
+    plt.ylabel('Frequency')
+    plt.show()
+
+    # Create box plot
+    plt.figure(figsize=(10, 6))
+    sns.boxplot(data=df, x=col)
+    plt.title(f'Box Plot of {col}')
+    plt.xlabel(col)
+    plt.show()
+
+Explore categorical variables
+Subtask:
+Analyze the distribution of categorical variables using bar plots or count plots.
+
+Reasoning: Identify the categorical columns and create count plots for each to visualize their distributions.
+
+
+[26]
+9 s
+# Identify categorical columns
+categorical_cols = df.select_dtypes(include='object').columns
+
+# Create count plots for each categorical column
+for col in categorical_cols:
+    plt.figure(figsize=(12, 6))
+    sns.countplot(data=df, y=col, order=df[col].value_counts().index)
+    plt.title(f'Distribution of {col}')
+    plt.xlabel('Count')
+    plt.ylabel(col)
+    plt.show()
+
+Correlation analysis
+Subtask:
+Calculate and visualize the correlation matrix for numerical features to understand the relationships between variables.
+
+Reasoning: Calculate and visualize the correlation matrix for numerical features.
+
+
+[27]
+0 s
+# Select numerical columns
+numerical_cols = df.select_dtypes(include=np.number)
+
+# Calculate the correlation matrix
+correlation_matrix = numerical_cols.corr()
+
+# Create a heatmap of the correlation matrix
+plt.figure(figsize=(12, 8))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f")
+plt.title('Correlation Matrix of Numerical Features')
+plt.show()
+
+Bivariate analysis
+Subtask:
+Explore the relationship between the target variable ('Consumo') and other features using scatter plots, box plots, or other appropriate visualizations.
+
+Reasoning: Create scatter plots to visualize the relationship between 'Consumo' and the selected numerical independent variables: 'Caballos', 'Peso neto', and 'Tamaño del motor'.
+
+
+[28]
+1 s
+# Select the target variable
+y = df['Consumo']
+
+# Select the key numerical independent variables
+X = df[['Caballos', 'Peso neto', 'Tamaño del motor']]
+
+# Combine X and y into a temporary DataFrame to easily drop rows with NaN for plotting
+plot_df = pd.concat([X, y], axis=1).dropna()
+
+# Create scatter plots for each selected independent variable against 'Consumo'
+for col in X.columns:
+    plt.figure(figsize=(10, 6))
+    sns.scatterplot(data=plot_df, x=col, y='Consumo')
+    plt.title(f'Scatter Plot: {col} vs. Consumo')
+    plt.xlabel(col)
+    plt.ylabel('Consumo')
+    plt.grid(True)
+    plt.show()
+
+Summary:
+Data Analysis Key Findings
+The dataset contains 157 entries and 14 columns.
+Several columns have missing values, with 'Valor de reventa a 4 años' having the most significant number (36 missing values).
+The descriptive statistics reveal the distribution characteristics (mean, std, min, max, quartiles) for numerical columns like 'Precio en miles', 'Tamaño del motor', 'Caballos', 'Peso neto', and 'Consumo'.
+Histograms and box plots showed the distribution shapes of numerical features and highlighted potential outliers in columns like 'Precio en miles', 'Caballos', and 'Capacidad de combustible'.
+Count plots displayed the distribution of categorical variables, showing the frequency of different vehicle 'Fabricante' (Manufacturer), 'Modelo', 'Tipo de vehículo', 'Estilo de carrocería', and 'Conducir'.
+The correlation matrix revealed varying degrees of correlation between numerical features. 'Consumo' shows a positive correlation with 'Tamaño del motor', 'Caballos', and 'Peso neto'.
+Scatter plots confirmed the relationships between 'Consumo' and selected numerical variables, visually indicating how 'Caballos', 'Peso neto', and 'Tamaño del motor' relate to fuel consumption.
+Insights or Next Steps
+The significant number of missing values, particularly in 'Valor de reventa a 4 años', needs to be addressed based on its relevance to future analysis or modeling.
+The identified outliers in numerical features might require further investigation and potential handling (e.g., capping or transformation) depending on the requirements of downstream tasks like model building.
+Resumen:
+
+Resultados clave del análisis de datos El conjunto de datos contiene 157 entradas y 14 columnas. Varias columnas presentan valores faltantes, siendo "Valor de reventa a 4 años" la que presenta el mayor número (36 valores faltantes).
+
+Los estadísticos descriptivos revelan las características de distribución (media, desviación estándar, mínimo, máximo y cuartiles) para columnas numéricas como "Precio en millas", "Tamaño del motor", "Caballos", "Peso neto" y "Consumo". Los histogramas y diagramas de caja mostraron las formas de distribución de las características numéricas y destacaron posibles valores atípicos en columnas como "Precio en millas", "Caballos" y "Capacidad de combustible".
+
+Los gráficos de conteo mostraron la distribución de las variables categóricas, mostrando la frecuencia de los diferentes vehículos: "Fabricante", "Modelo", "Tipo de vehículo", "Estilo de carrocería" y "Conducir".
+
+La matriz de correlación reveló diversos grados de correlación entre las características numéricas. El consumo muestra una correlación positiva con el tamaño del motor, los caballos y el peso neto. Los diagramas de dispersión confirmaron las relaciones entre el consumo y las variables numéricas seleccionadas, indicando visualmente cómo se relacionan los caballos, el peso neto y el tamaño del motor con el consumo de combustible. Perspectivas o próximos pasos
+
+El número significativo de valores faltantes, en particular en el valor de reventa a 4 años, debe abordarse en función de su relevancia para futuros análisis o modelos. Los valores atípicos identificados en las características numéricas podrían requerir mayor investigación y posible gestión (por ejemplo, limitación o transformación) según los requisitos de las tareas posteriores, como la construcción del modelo.
+
+Productos de pago de Colab - Cancelar contratos
 
